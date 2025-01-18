@@ -104,3 +104,148 @@ const filmy = [
 		premiera: '2022-12-24',
 	},
 ]
+
+const filmy2 = [
+  { id: "pelisky", nazev: "Pelíšky", popis: "česká komedie.", plakat: "pelisky.jpg" },
+  { id: "promlceno", nazev: "Promlčeno", popis: "Napínavý thriller.", plakat: "promlceno.jpg" },
+  { id: "ona", nazev: "Ona", popis: "Drama o osudu ženy.", plakat: "ona.jpg" },
+  { id: "rrrrrr", nazev: "RRRRRR", popis: "Bláznivá francouzská komedie.", plakat: "rrrrrr.jpg" },
+  { id: "vlastnici", nazev: "Vlastníci", popis: "Česká komedie o bytovém družstvu.", plakat: "vlastnici.jpg" },
+  { id: "kimi", nazev: "Kimi", popis: "Technothriller o sledování.", plakat: "kimi.jpg" },
+  { id: "petrolejove-lampy", nazev: "Petrolejové lampy", popis: "Drama o lásce a tajemství.", plakat: "petrolejove-lampy.jpg" },
+  { id: "krakonosovo-tajemstvi", nazev: "Krakonošovo tajemství", popis: "Fantasy příběh z hor.", plakat: "krakonosovo-tajemstvi.jpg" },
+  { id: "carodejka", nazev: "Čarodějka", popis: "Romantická fantasy.", plakat: "carodejka.jpg" }
+]
+
+const filmId = window.location.hash.slice(1)
+console.log("Film ID z URL:", filmId)
+
+const vybranyFilm = filmy.find(film => film.id === filmId)
+console.log("Vybraný film:", vybranyFilm)
+
+const mainElement = document.querySelector('main')
+
+if (vybranyFilm) {
+  mainElement.innerHTML = `
+    <article>
+      <h2>${vybranyFilm.nazev}</h2>
+      <p>${vybranyFilm.popis}</p>
+      <img src="${vybranyFilm.plakat.url}" 
+           width="${vybranyFilm.plakat.sirka}" 
+           height="${vybranyFilm.plakat.vyska}" 
+           alt="plakát" />
+    </article>
+  `
+} else {
+  mainElement.innerHTML = `<p>Film nebyl nalezen.</p>`
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  const noteForms = document.querySelectorAll('.card-body form')
+
+  noteForms.forEach((form) => {
+    const messageInput = form.querySelector('#message-input')
+    const termsCheckbox = form.querySelector('#terms-checkbox')
+    const filmNoteElement = form.closest('.card-body').querySelector('.film-note')
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+    
+      messageInput.classList.remove('is-invalid')
+      termsCheckbox.classList.remove('is-invalid')
+
+      let valid = true
+
+     
+      if (messageInput.value.trim() === '') {
+        messageInput.classList.add('is-invalid')
+        messageInput.focus()
+        valid = false
+      }
+
+     
+      if (!termsCheckbox.checked) {
+        termsCheckbox.classList.add('is-invalid')
+        if (valid) termsCheckbox.focus()
+        valid = false;
+      }
+
+    
+      if (valid) {
+        filmNoteElement.innerHTML = `
+          <p class="card-text">${messageInput.value}</p>
+        `;
+        form.reset()
+      }
+    })
+  })
+})
+
+function zvyrazniHvezdicky(pocet) {
+  const hvezdicky = document.querySelectorAll('.fa-star')
+  
+  hvezdicky.forEach((hvezdicka, index) => {
+    if (index < pocet) {
+      hvezdicka.classList.remove('far') 
+      hvezdicka.classList.add('fas')   
+    } else {
+      hvezdicka.classList.remove('fas') 
+      hvezdicka.classList.add('far')   
+    }
+  })
+}
+
+
+function nastavPosluchaceHvezdickam() {
+  const hvezdicky = document.querySelectorAll('.fa-star')
+  
+  hvezdicky.forEach(hvezdicka => {
+    hvezdicka.addEventListener('click', () => {
+      const poradi = parseInt(hvezdicka.textContent)
+      zvyrazniHvezdicky(poradi) 
+    })
+  })
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  nastavPosluchaceHvezdickam()
+})
+let posledniKliknuteHvezdicky = 0
+
+function zvyrazniHvezdicky(pocet) {
+  const hvezdicky = document.querySelectorAll('.fa-star')
+  hvezdicky.forEach((hvezdicka, index) => {
+    if (index < pocet) {
+      hvezdicka.classList.remove('far')
+      hvezdicka.classList.add('fas')
+    } else {
+      hvezdicka.classList.remove('fas')
+      hvezdicka.classList.add('far')
+    }
+  })
+}
+
+function nastavPosluchaceHvezdickam() {
+  const hvezdicky = document.querySelectorAll('.fa-star')
+  hvezdicky.forEach(hvezdicka => {
+    hvezdicka.addEventListener('mouseenter', () => {
+      const poradi = parseInt(hvezdicka.textContent)
+      zvyrazniHvezdicky(poradi)
+    })
+    hvezdicka.addEventListener('mouseleave', () => {
+      zvyrazniHvezdicky(posledniKliknuteHvezdicky)
+    })
+    hvezdicka.addEventListener('click', () => {
+      const poradi = parseInt(hvezdicka.textContent)
+      posledniKliknuteHvezdicky = poradi
+      zvyrazniHvezdicky(poradi)
+    })
+  })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  nastavPosluchaceHvezdickam()
+})
